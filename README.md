@@ -1,727 +1,408 @@
-<div align="center">
-  
-![Banner](./.github/assets/banner.png)
+# Mental Health iMessage AI Chatbot
 
-# @photon-ai/imessage-kit
-
-> A type-safe, elegant iMessage SDK for macOS with cross-runtime support
-
-</div>
-
-[![npm version](https://img.shields.io/npm/v/@photon-ai/imessage-kit.svg)](https://www.npmjs.com/package/@photon-ai/imessage-kit)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
-[![License](https://img.shields.io/badge/license-SSPL-blue.svg)](./LICENSE)
-[![Discord](https://img.shields.io/badge/Discord-Join-5865F2.svg?logo=discord&logoColor=white)](https://discord.gg/bZd4CMd2H5)
-
-It lets you **read**, **send**, and **automate** iMessage conversations directly from Node.js or Bun.
-Built for developers who want to integrate messaging into their **AI agents, automation scripts**, or **chat-first apps**, without AppleScript headaches.
-
-> [!NOTE]
-> **✨ Looking for advanced features like threaded replies, tapbacks, message editing, unsending, live typing indicators, and group chats? Or need hosting / enterprise-grade scalability? Check out our [Advanced iMessage Kit](https://github.com/photon-hq/advanced-imessage-kit) and contact us at daniel@something.surf.**
+A compassionate AI-powered mental health support chatbot for iMessage, built with the iMessage Kit and **Qwen 3.5 32B** (via Hack Club AI).
 
 ## Features
 
-- **100% Type-safe** - Full TypeScript support with perfect type inference
-- **Cross-Runtime** - Supports both Node.js and Bun with automatic runtime detection
-- **Smart Database** - Uses native `bun:sqlite` for Bun, `better-sqlite3` for Node.js
-- **Read Messages** - Query iMessage, SMS, and RCS messages with powerful filters
-- **Send Messages** - Send text, images, and files (PDF, CSV, VCF, etc.)
-- **Fluent API** - Elegant message chain processing
-- **Real-time Watching** - Monitor new messages with webhook support (works even in Do Not Disturb mode)
-- **Plugin System** - Extensible architecture for custom behaviors
-- **Performance** - Concurrent message sending with semaphore control
-- **Error Handling** - Comprehensive error types and type guards
+### 🤖 AI-Powered Support
+- Empathetic, conversational mental health support
+- Uses **Qwen 3.5 32B** for intelligent, context-aware responses (FREE!)
+- Maintains conversation history for coherent interactions
+- Evidence-based coping strategies (CBT, DBT, mindfulness)
 
+### 🆘 Crisis Detection
+- Automatic detection of crisis situations
+- Immediate crisis resource provision
+- Multiple severity levels (low, medium, high)
+- Comprehensive crisis hotline information
 
+### 💬 Conversation Management
+- Session-based conversation tracking
+- Automatic session cleanup after 1 hour of inactivity
+- Maximum 20 messages per conversation for context
+- New conversation detection and greeting
 
-## Hello, iMessage 
-```typescript
-import { IMessageSDK } from '@photon-ai/imessage-kit'
+### 🛡️ Safety Features
+- Clear boundaries (bot vs. professional therapy)
+- Encourages professional help when needed
+- Privacy-focused (DM only by default)
+- Error handling and fallback responses
 
-const sdk = new IMessageSDK()
-await sdk.send('+1234567890', 'Hello from iMessage Kit!')
-```
+### 📱 iMessage Integration
+- Real-time message watching
+- Automatic responses to direct messages
+- Support for both iMessage and SMS
+- Optional webhook integration for logging
 
+## Prerequisites
 
+- **macOS** (iMessage Kit only works on macOS)
+- **Bun** runtime (recommended) or Node.js >= 18.0.0
+- **Free AI API key** (already included! 🎉)
+- **Full Disk Access** permission for your terminal/IDE
 
+**No paid API required!** The bot uses Qwen 3.5 32B via Hack Club AI's free proxy.
 
 ## Installation
 
+### 1. Clone or copy the project
+
 ```bash
-# For Bun (zero dependencies)
-bun add @photon-ai/imessage-kit
-
-# For Node.js (requires better-sqlite3)
-npm install @photon-ai/imessage-kit better-sqlite3
-# or
-yarn add @photon-ai/imessage-kit better-sqlite3
+cd mental-health-bot
 ```
 
-## Granting Permission
+### 2. Install dependencies
 
-`IMessageKit` requires **Full Disk Access** to read your chat history and perform automation tasks.
+```bash
+# Using Bun (recommended)
+bun install
 
-Before starting, make sure to grant the necessary permissions to the IDE or terminal where you plan to run the program:
-
-1. Open **System Settings → Privacy & Security → Full Disk Access**.
-2. Click the **“+”** button and **add** the IDE or terminal you are using.
-
-In the example below, access has been granted to **Zed** and **Terminal**, allowing `IMessageKit` to function properly with both.
-
-If you use other tools such as **Cursor**, **VS Code**, or **Warp**, make sure to grant them permission as well.
-
-<p align="center">
-  <img src="./.github/assets/instruction-1" width="49%">
-  <img src="./.github/assets/instruction-2" width="49%">
-</p>
-
-
-## Quick Start
-
-```typescript
-import { IMessageSDK } from '@photon-ai/imessage-kit'
-
-// Initialize SDK (works in both Node.js and Bun)
-const sdk = new IMessageSDK({
-    debug: true,
-    maxConcurrent: 5
-})
-
-// Get unread messages
-const unread = await sdk.getUnreadMessages()
-console.log(`${unread.total} unread from ${unread.senderCount} senders`)
-for (const { sender, messages } of unread.groups) {
-    console.log(`${sender}: ${messages.length} unread messages`)
-}
-
-// Send messages (unified API)
-await sdk.send('+1234567890', 'Hello!')
-await sdk.send('+1234567890', { images: ['photo.jpg'] })
-await sdk.send('+1234567890', { files: ['document.pdf', 'contact.vcf'] })
-await sdk.send('+1234567890', { text: 'Check this out', images: ['photo.jpg'], files: ['data.csv'] })
-
-// Always close when done
-await sdk.close()
+# Or using npm
+npm install
 ```
 
-## Core APIs
+### 3. Configure environment variables
 
-### Reading Messages
-
-```typescript
-// Get messages (excludes your own by default)
-const result = await sdk.getMessages()
-
-// Filter messages
-const filtered = await sdk.getMessages({
-    sender: '+1234567890',
-    unreadOnly: true,
-    limit: 20,
-    since: new Date('2025-10-20')
-})
-
-// Search messages by text content
-const searchResults = await sdk.getMessages({
-    search: 'meeting',
-    limit: 50
-})
-
-// Include your own messages
-const all = await sdk.getMessages({ excludeOwnMessages: false })
-
-// Get unread messages grouped by sender
-const unread = await sdk.getUnreadMessages()
-console.log(`Total: ${unread.total}, Senders: ${unread.senderCount}`)
+```bash
+# Copy the example env file (includes free API key!)
+cp .env.example .env
 ```
 
-### Sending Messages
-
-```typescript
-// Unified send API - automatically detects recipient or chatId
-await sdk.send(target, content)
-
-// Get sent message immediately (requires watcher)
-await sdk.startWatching()
-const result = await sdk.send('+1234567890', 'Hello!')
-if (result.message) {
-    console.log('Sent message:', result.message.text)
-    console.log('Message ID:', result.message.id)
-}
-
-// Send to phone number
-await sdk.send('+1234567890', 'Hello World!')
-
-// Send to email
-await sdk.send('user@example.com', 'Hello!')
-
-// Send to group chat (using chatId)
-await sdk.send('chat45e2b868ce1e43da89af262922733382', 'Hello group!')
-
-// Send images
-await sdk.send('+1234567890', { 
-    images: ['image1.jpg', 'image2.png'] 
-})
-
-// Send files (PDF, CSV, VCF, etc.)
-await sdk.send('+1234567890', { 
-    files: ['document.pdf', 'data.csv', 'contact.vcf'] 
-})
-
-// Send text with images and files
-await sdk.send('+1234567890', { 
-    text: 'Check these files',
-    images: ['photo.jpg'],
-    files: ['report.pdf']
-})
-
-// Send network images (auto-download)
-await sdk.send('+1234567890', { 
-    images: ['https://example.com/image.jpg'] 
-})
-
-// Convenience methods for files (works with both recipient and chatId)
-await sdk.sendFile('+1234567890', '/path/to/document.pdf')
-await sdk.sendFile('chat123...', '/path/to/report.pdf', 'Here is the file')
-await sdk.sendFiles('+1234567890', ['file1.pdf', 'file2.csv'], 'Multiple files')
-
-// Batch sending
-await sdk.sendBatch([
-    { to: '+1111111111', content: 'Message 1' },
-    { to: '+2222222222', content: { text: 'Message 2', images: ['img.jpg'] } },
-    { to: 'chat123...', content: { files: ['document.pdf'] } }
-])
+The `.env` file already includes a free API key:
+```env
+AI_API_KEY=ska2a10e7d8a7e4645bd27fe02dfd26cd866b29e2616704a9abf25c28582c3bc22
+BOT_NAME=MindfulBot
 ```
 
-**Note**: The `send()` method automatically detects whether you're sending to:
-- A **recipient** (phone number or email): `'+1234567890'`, `'user@example.com'`
-- A **chatId** (group or DM): `'chat123...'`, `'iMessage;+1234567890'`
+**No setup needed!** The API key is pre-configured. Just customize the bot name if you want.
 
-### Listing Chats
+### 4. Grant Full Disk Access
 
-`listChats()` returns both group and direct chats with filtering and sorting options:
+The bot needs access to your iMessage database:
 
-```typescript
-// Get all chats
-const all = await sdk.listChats()
+1. Open **System Settings → Privacy & Security → Full Disk Access**
+2. Click the **"+"** button
+3. Add your terminal application (Terminal, iTerm, Warp, etc.) or IDE (VS Code, Cursor, Zed, etc.)
 
-// Get recent group chats with unread messages
-const groups = await sdk.listChats({
-    type: 'group',
-    hasUnread: true,
-    limit: 20
-})
+## Usage
 
-// Search chats by name
-const found = await sdk.listChats({
-    search: 'John',
-    sortBy: 'name'
-})
+### Starting the bot
 
-// Backward compatible: limit only
-const recent = await sdk.listChats(50)
+```bash
+# Using Bun (recommended)
+bun run dev
 
-// Each chat includes unreadCount
-for (const c of chats) {
-  console.log({
-    chatId: c.chatId,
-    name: c.displayName,
-    last: c.lastMessageAt,
-    isGroup: c.isGroup,
-    unread: c.unreadCount  // ← New field
-  })
-}
+# Or using npm
+npm run dev
 ```
 
-**ChatId formats:**
-- Group: `chatId = chat.guid` (stable GUID, recommended for all group routing)
-- Direct (DM): `chatId = "<service>;<address>"` (for example `iMessage;+1234567890` or `SMS;+1234567890`)
+The bot will start watching for new iMessage conversations and respond automatically.
 
-**Note on ChatId formats:**
-- Group chats: Use the GUID from `listChats()` (e.g., `chat45e2b868ce1e43da89af262922733382`)
-- Direct messages: Use phone/email directly (e.g., `+1234567890`, `user@example.com`)
-- The SDK also accepts AppleScript format `iMessage;+;chat...` for groups (auto-normalized)
-- Service-prefixed DMs like `iMessage;+1234567890` are supported (from database)
+### Bot Commands
 
-**ChatId Format Matching:**
+Users can send these commands to the bot:
 
-The SDK intelligently handles different chatId formats to ensure reliable message tracking:
+- **`help`** - Show help message with capabilities
+- **`start`** - Begin a new conversation with greeting
+- **`reset`** - Clear conversation history
+- **`resources`** - Get mental health resource links
+- **`crisis`** - Get crisis hotline information
 
-- **When sending**: The SDK constructs chatIds in the format `iMessage;-;recipient` for DMs
-- **In database**: Messages may be stored with just the recipient (e.g., `pilot@photon.codes`)
-- **Automatic normalization**: The SDK extracts the core identifier (the part after the last semicolon) to match both formats
-  - `iMessage;-;pilot@photon.codes` → normalizes to `pilot@photon.codes`
-  - `pilot@photon.codes` → normalizes to `pilot@photon.codes`
-  - Both match successfully ✓
+Commands can be sent as plain text, with `/` prefix, or `!` prefix:
+- `help`
+- `/help`
+- `!help`
 
-This ensures that sent messages are correctly tracked and resolved, even when database and constructed formats differ.
+### Example Conversation
 
-### Message Chain Processing
-
-The SDK provides a fluent API for elegant message processing:
-
-```typescript
-// Basic chain processing
-await sdk.message(msg)
-    .matchText(/hello/i)
-    .replyText('Hi there!')
-    .execute()
-
-// Complex conditions
-await sdk.message(msg)
-    .ifUnread()
-    .when(m => m.sender.startsWith('+1'))
-    .replyText('Received!')
-    .execute()
-
-// Reply with images
-await sdk.message(msg)
-    .matchText('photo')
-    .replyImage(['photo.jpg', 'photo2.jpg'])
-    .execute()
-
-// Group chat only
-await sdk.message(msg)
-    .ifGroupChat()
-    .replyText('Group reply!')
-    .execute()
 ```
-Note: Replies in the chain always target `message.chatId` (supports both DM and group).
+User: Hey, I'm feeling really anxious today
 
-### Real-time Message Watching
+Bot: I hear that you're feeling anxious. That's really tough, and I'm glad 
+you reached out. Anxiety can feel so overwhelming. Would you like to try a 
+quick grounding technique that might help?
+
+User: Yes please
+
+Bot: Great! Let's try the 5-4-3-2-1 grounding technique:
+
+Look around and name:
+• 5 things you can SEE
+• 4 things you can TOUCH
+• 3 things you can HEAR
+• 2 things you can SMELL
+• 1 thing you can TASTE
+
+Take your time with each one. This helps bring you back to the present 
+moment. How are you feeling now?
+```
+
+### Crisis Detection Example
+
+```
+User: I don't want to be here anymore
+
+Bot: 🆘 CRISIS RESOURCES
+
+If you're in immediate danger:
+• Call 911
+
+24/7 Crisis Support:
+• Call/Text 988 (Suicide & Crisis Lifeline)
+• Text HOME to 741741 (Crisis Text Line)
+• Call 1-800-273-8255 (National Suicide Prevention Lifeline)
+
+[... additional resources ...]
+
+I'm really concerned about your safety right now. What you're feeling is 
+serious, and you deserve immediate support from trained crisis professionals.
+
+Please reach out to one of these resources right away. You don't have to go 
+through this alone. 💙
+```
+
+## Configuration
+
+### config.ts
+
+Customize the bot's behavior in `src/config.ts`:
 
 ```typescript
-// Configure watcher
-const sdk = new IMessageSDK({
+export const config = {
+  openai: {
+    model: 'gpt-4-turbo-preview',  // AI model to use
+    maxTokens: 500,                 // Max response length
+    temperature: 0.7,               // Response creativity (0-1)
+  },
+  
+  imessage: {
+    debug: true,                    // Enable debug logging
+    maxConcurrent: 3,               // Max concurrent message sends
     watcher: {
-        pollInterval: 3000,        // Check interval (default: 2000ms)
-        unreadOnly: false,         // Watch all messages (default: false)
-        excludeOwnMessages: true   // Exclude own messages (default: true)
-    }
-})
-
-// Start watching for direct messages
-await sdk.startWatching({
-    onDirectMessage: async (message) => {
-        await sdk.message(message)
-            .replyText('Thanks!')
-            .execute()
+      pollInterval: 3000,           // Check for new messages every 3s
+      excludeOwnMessages: true,     // Don't respond to own messages
     },
-    
-    onError: (error) => {
-        console.error('Error:', error)
-    }
-})
-
-sdk.stopWatching()
+  },
+  
+  crisis: {
+    hotline: '988',                 // Crisis hotline number
+    textLine: '741741',             // Crisis text line
+  },
+}
 ```
 
-**More examples:**
+### Conversation Settings
+
+In `src/conversationManager.ts`:
 
 ```typescript
-// Watch all messages (DMs + groups)
-await sdk.startWatching({
-    onMessage: async (message) => {
-        console.log(`New message from ${message.sender}: ${message.text}`)
-    }
-})
-
-// Watch only group messages
-await sdk.startWatching({
-    onGroupMessage: async (message) => {
-        console.log(`Group message in ${message.chatId}`)
-    }
-})
-
-// Watch both DMs and groups separately
-await sdk.startWatching({
-    onDirectMessage: async (message) => {
-        // Handle DM
-        await sdk.send(message.sender, 'Thanks for your DM!')
-    },
-    onGroupMessage: async (message) => {
-        // Handle group message
-        console.log(`Group: ${message.chatId}`)
-    }
-})
+private readonly maxHistoryLength = 20      // Messages to keep in context
+private readonly sessionTimeout = 3600000   // Session expiry (1 hour)
 ```
+
+### System Prompt
+
+Customize the AI's personality and approach in `src/prompts.ts`:
+
+```typescript
+export const systemPrompt = `You are a compassionate, empathetic mental 
+health support AI assistant...`
+```
+
+## Project Structure
+
+```
+mental-health-bot/
+├── src/
+│   ├── index.ts                 # Main bot entry point
+│   ├── config.ts                # Configuration
+│   ├── aiService.ts             # AI integration (Qwen 3.5 32B)
+│   ├── messageHandler.ts        # Message processing logic
+│   ├── conversationManager.ts   # Conversation history management
+│   ├── crisisDetection.ts       # Crisis detection system
+│   └── prompts.ts               # AI system prompts
+├── package.json
+├── tsconfig.json
+├── .env.example
+└── README.md
+```
+
+## Safety & Ethics
+
+### Important Disclaimers
+
+⚠️ **This bot is NOT a replacement for professional mental health care**
+
+- The bot clearly states it's an AI assistant, not a therapist
+- It encourages users to seek professional help when appropriate
+- Crisis situations trigger immediate provision of crisis resources
+- All crisis detections are logged for review
+
+### Privacy Considerations
+
+- Conversations are stored in memory only (not persisted to disk)
+- Sessions expire after 1 hour of inactivity
+- No data is sent to external servers except Hack Club AI proxy
+- The AI model (Qwen 3.5 32B) is privacy-conscious and secure
+- Consider implementing encryption for production use
+
+### Ethical Guidelines
+
+1. **Transparency**: Always identify as an AI
+2. **Safety First**: Prioritize user safety over conversation flow
+3. **Boundaries**: Don't diagnose or prescribe treatment
+4. **Encouragement**: Guide users toward professional resources
+5. **Non-judgmental**: Create a safe, supportive space
+
+## Customization
+
+### Using Different AI Models
+
+The bot currently uses **Qwen 3.5 32B** via Hack Club AI (free, fast, intelligent).
+
+Want to try other models from Hack Club AI? Available options:
+- `qwen/qwen3-32b` (current - balanced)
+- `moonshotai/kimi-k2-thinking` (reasoning-focused)
+- `openai/gpt-oss-120b` (very large)
+- `moonshotai/kimi-k2-0905` (fast)
+
+Change in `src/config.ts`:
+```typescript
+model: 'qwen/qwen3-32b', // Change to any model above
+```
+
+To use other AI providers (OpenAI, Anthropic Claude, etc.):
+1. Update the client initialization in `src/aiService.ts`
+2. Change the API endpoint in `src/config.ts`
+3. Get an API key for that provider
+
+### Adding More Features
+
+Ideas for enhancement:
+
+- **Mood tracking**: Log user mood over time
+- **Scheduled check-ins**: Proactive wellness messages
+- **Resource library**: Curated mental health resources
+- **Meditation guides**: Audio/text meditation instructions
+- **Journal prompts**: Daily journaling suggestions
+- **Group support**: Moderated group chat support
+
+### Localization
+
+To support other languages/regions:
+
+1. Update crisis resources in `src/crisisDetection.ts`
+2. Translate system prompt in `src/prompts.ts`
+3. Add language-specific keywords for crisis detection
+4. Adjust OpenAI model for better language support
+
+## Monitoring & Logging
+
+### Console Output
+
+The bot logs:
+- Incoming messages (with sender info)
+- Crisis detections (with severity)
+- AI responses
+- Errors and warnings
+- Statistics every 5 minutes
 
 ### Webhook Integration
 
-```typescript
-const sdk = new IMessageSDK({
-    webhook: {
-        url: 'https://your-server.com/webhook',
-        headers: { 'Authorization': 'Bearer token' }
-    }
-})
+Configure a webhook in `.env` to receive events:
 
-await sdk.startWatching()
-// Webhook receives: { event, message, timestamp }
+```env
+WEBHOOK_URL=https://your-server.com/webhook
 ```
 
-### Working with Attachments
+Events sent to webhook:
+- New messages
+- Crisis detections
+- Errors
 
-The SDK provides helper functions for working with attachments:
+### Production Monitoring
 
-```typescript
-import {
-    attachmentExists,
-    downloadAttachment,
-    getAttachmentSize,
-    isImageAttachment,
-    isVideoAttachment
-} from '@photon-ai/imessage-kit'
+For production use, consider adding:
+- Structured logging (Winston, Pino)
+- Error tracking (Sentry)
+- Analytics (custom or third-party)
+- Database persistence
+- Human escalation system
 
-const message = await sdk.getMessages({ hasAttachments: true, limit: 1 })
-const attachment = message.messages[0].attachments[0]
+## Troubleshooting
 
-// Check if file exists
-if (await attachmentExists(attachment)) {
-    // Get file size
-    const size = await getAttachmentSize(attachment)
-    console.log(`File size: ${(size / 1024 / 1024).toFixed(2)} MB`)
-    
-    // Check file type
-    if (isImageAttachment(attachment)) {
-        // Download image
-        await downloadAttachment(attachment, '/path/to/save/image.jpg')
-    } else if (isVideoAttachment(attachment)) {
-        console.log('Video file')
-    }
-}
+### Bot not responding
+
+1. **Check Full Disk Access**: Ensure your terminal/IDE has permission
+2. **Verify API key**: Check `.env` file has valid OpenAI API key
+3. **Check logs**: Look for error messages in console output
+4. **Test manually**: Try sending a test message
+
+### OpenAI API errors
+
 ```
-
-**Available helpers:**
-- `attachmentExists(attachment)` - Check if file exists
-- `downloadAttachment(attachment, destPath)` - Copy file to destination
-- `getAttachmentSize(attachment)` - Get file size in bytes
-- `getAttachmentMetadata(attachment)` - Get file stats
-- `readAttachment(attachment)` - Read file as Buffer
-- `getAttachmentExtension(attachment)` - Get file extension
-- `isImageAttachment(attachment)` - Check if image
-- `isVideoAttachment(attachment)` - Check if video
-- `isAudioAttachment(attachment)` - Check if audio
-
-## Plugin System
-
-Extend SDK functionality with plugins:
-
-```typescript
-import { loggerPlugin } from '@photon-ai/imessage-kit'
-
-// Use built-in logger plugin
-sdk.use(loggerPlugin({
-    level: 'info',
-    colored: true,
-    timestamp: false
-}))
-
-// Create custom plugin
-const customPlugin = {
-    name: 'my-plugin',
-    onInit: async () => {
-        console.log('Plugin initialized')
-    },
-    onBeforeSend: async (to, content) => {
-        console.log('Sending to:', to)
-        return { to, content }
-    },
-    onAfterSend: async (result) => {
-        console.log('Send result:', result)
-    },
-    onDestroy: async () => {
-        console.log('Plugin destroyed')
-    }
-}
-
-sdk.use(customPlugin)
+Error: Rate limit exceeded
 ```
+- Wait a few minutes and try again
+- Upgrade your OpenAI plan for higher limits
 
-### Finding Group Chat IDs
-
-To send messages to a group chat, you need its `chatId`. Use `listChats()` to find it:
-
-```typescript
-// List all chats
-const chats = await sdk.listChats()
-
-// Filter for group chats only
-const groups = await sdk.listChats({ type: 'group' })
-
-// Search by name
-const projectChats = await sdk.listChats({ search: 'Project', type: 'group' })
-
-// Each chat has a chatId you can use for sending
-for (const chat of groups) {
-    console.log(`${chat.displayName}: ${chat.chatId}`)
-}
 ```
-
-Then use the `chatId` to send messages:
-
-```typescript
-// Send to group using chatId from listChats()
-await sdk.send('chat45e2b868ce1e43da89af262922733382', 'Hello group!')
-await sdk.send('chat45e2b868ce1e43da89af262922733382', {
-    text: 'Check these files',
-    files: ['/file1.pdf', '/file2.csv']
-})
+Error: Invalid API key
 ```
+- Check your API key in `.env` file
+- Ensure no extra spaces or quotes
 
-**ChatId Formats:**
-- **Group chats**: GUID format (e.g., `chat45e2b868ce1e43da89af262922733382`)
-- **Direct messages**: `service;address` format (e.g., `iMessage;+1234567890`)
-- The SDK also accepts AppleScript format `iMessage;+;chat...` for groups (auto-normalized)
+### Permission errors
 
-## Advanced Usage
-
-### Configuration Options
-
-```typescript
-const sdk = new IMessageSDK({
-    debug: true,                     // Enable debug logging
-    maxConcurrent: 10,               // Max concurrent sends
-    scriptTimeout: 30000,            // AppleScript timeout (ms)
-    databasePath: '/custom/path',    // Custom database path
-    plugins: [loggerPlugin()],       // Plugins
-    
-    // Watcher configuration
-    watcher: {
-        pollInterval: 2000,          // Polling interval in ms (default: 2000)
-        unreadOnly: false,           // Only watch unread messages (default: false)
-        excludeOwnMessages: true,    // Exclude your own messages (default: true)
-        initialLookbackMs: 10000     // Initial lookback time in ms (default: 10000)
-                                     // Set to 0 to only process new messages
-                                     // Note: May cause duplicate processing if watcher restarts frequently
-    }
-})
 ```
-
-**Advanced Options:**
-
-- **`initialLookbackMs`**: Controls how far back the watcher looks when it first starts
-  - Default: `10000` (10 seconds) - catches messages sent just before watcher starts
-  - Set to `0` - only process messages sent after watcher starts (no lookback)
-  - Set to `5000` - lookback 5 seconds
-  - **Warning**: If you frequently restart the watcher, this may cause duplicate message processing
-
-### Error Handling
-
-```typescript
-import { SendError, DatabaseError } from '@photon-ai/imessage-kit'
-
-try {
-    await sdk.send('+1234567890', 'Hello')
-} catch (error) {
-    if (error instanceof SendError) {
-        console.error('Send failed:', error.message)
-    }
-}
+Error: EACCES: permission denied
 ```
-
-## Examples
-
-Check the `examples/` directory for complete examples:
-
-- **[01-send-text.ts](./examples/01-send-text.ts)** - Basic text message
-- **[02-send-image.ts](./examples/02-send-image.ts)** - Send images
-- **[03-send-file.ts](./examples/03-send-file.ts)** - Send files
-- **[04-send-group.ts](./examples/04-send-group.ts)** - Send to group chat
-- **[05-query-messages.ts](./examples/05-query-messages.ts)** - Query messages
-- **[06-list-chats.ts](./examples/06-list-chats.ts)** - List all chats
-- **[07-watch-messages.ts](./examples/07-watch-messages.ts)** - Watch for new messages
-- **[08-auto-reply.ts](./examples/08-auto-reply.ts)** - Auto-reply bot
-- **[09-batch-send.ts](./examples/09-batch-send.ts)** - Batch sending
-- **[10-get-sent-message.ts](./examples/10-get-sent-message.ts)** - Get sent message immediately
-- **[11-plugin.ts](./examples/11-plugin.ts)** - Custom plugin
-- **[12-error-handling.ts](./examples/12-error-handling.ts)** - Error handling
-- **[13-watch-own-messages.ts](./examples/13-watch-own-messages.ts)** - Watch own messages
+- Grant Full Disk Access as described in installation
+- Restart your terminal/IDE after granting permission
 
 ## Development
 
+### Running tests
+
 ```bash
-# Install dependencies
-npm install
-# or
-bun install
+bun test  # or npm test
+```
 
-# Run tests
-npm test        # runs bun test
-# or
-bun test
+### Linting
 
-# Run tests with coverage
-bun test --coverage
-
-# Build
-npm run build
-# or
-bun run build
-
-# Lint
-npm run lint
-# or
+```bash
 bun run lint
+```
 
-# Type check
-npm run type-check
-# or
+### Type checking
+
+```bash
 bun run type-check
 ```
 
-## Requirements
+### Building for production
 
-- **OS**: macOS only (accesses iMessage database)
-- **Runtime**: Node.js >= 18.0.0 or Bun >= 1.0.0
-- **Database Driver**: 
-  - **Bun**: Uses built-in `bun:sqlite` (no extra dependencies)
-  - **Node.js**: Requires `better-sqlite3` (install separately)
-- **Permissions**: Read access to `~/Library/Messages/chat.db`
-
-> **Note**: The SDK automatically detects your runtime and uses the appropriate database driver.
-
-## Important Notes
-
-### Message Watching Behavior
-
-- **Automatically excludes your own messages** (set `excludeOwnMessages: false` to include them)
-- Works in Do Not Disturb mode (timestamp-based detection)
-- Use `onMessage` for all messages, `onDirectMessage` for DMs only, or `onGroupMessage` for groups only
-
-### Supported File Types
-
-The SDK supports sending any file type that macOS Messages app accepts, including but not limited to:
-
-- **Documents**: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT, RTF
-- **Images**: JPG, PNG, GIF, HEIC, WEBP (auto-converted), AVIF (auto-converted)  
-- **Contact Cards**: VCF (vCard format)
-- **Data Files**: CSV, JSON, XML
-- **Archives**: ZIP, RAR, 7Z
-- **Media**: MP4, MOV, MP3, M4A
-- **And more**: Any file format supported by macOS Messages
-
-**Note**: Large files are automatically uploaded to iCloud when sending via iMessage. For SMS recipients, file size limits may apply depending on your carrier.
-
-### Security
-
-- This SDK reads from the local iMessage database
-- No data is sent to external servers (except your webhook if configured)
-- Network images are downloaded to temporary files and cleaned up automatically
-- Always validate user input when building bots
- - ChatId is validated as either a group GUID (no `;`) or a DM identifier in the form `<service>;<address>` (e.g., `iMessage;+1234567890`). Invalid inputs throw early.
-
-## API Reference
-
-### Main Methods
-
-- `getMessages(filter?)` - Query messages with optional filters
-- `getUnreadMessages()` - Get unread messages with statistics (total, senderCount, groups)
-- `listChats(options?)` - List chats with filtering/sorting (type, hasUnread, sortBy, search, limit)
-- `send(to, content)` - Send text, images, and/or files (returns SendResult with optional message)
-- `sendFile(to, filePath, text?)` - Send a single file (supports recipient or chatId)
-- `sendFiles(to, filePaths, text?)` - Send multiple files (supports recipient or chatId)
-- `sendBatch(messages)` - Send multiple messages concurrently
-- `message(msg)` - Create message processing chain
-- `startWatching(events?)` - Start monitoring new messages
-- `stopWatching()` - Stop monitoring
-- `use(plugin)` - Register plugin
-- `close()` - Close SDK and release resources
-
-### SendResult
-
-```typescript
-interface SendResult {
-    sentAt: Date                // When message was sent
-    message?: Message           // The sent message (only if watcher is running)
-}
+```bash
+bun run build
 ```
-
-**Note**: To get the `message` field populated, you must start the watcher before sending:
-```typescript
-await sdk.startWatching()
-const result = await sdk.send('+1234567890', 'Hello')
-// result.message will be available within ~2 seconds
-```
-
-### Message Object
-
-Each message object includes:
-
-```typescript
-interface Message {
-    id: string              // Message ID
-    guid: string            // Globally unique identifier
-    text: string | null     // Message text content
-    sender: string          // Sender (phone/email)
-    senderName: string | null  // Sender display name
-    chatId: string          // Chat identifier
-    isGroupChat: boolean    // Whether this is a group chat message
-    isFromMe: boolean       // Whether sent by current user
-    isRead: boolean         // Read status
-    service: ServiceType    // 'iMessage' | 'SMS' | 'RCS'
-    attachments: readonly Attachment[]  // File attachments
-    date: Date              // Message timestamp
-}
-```
-
-### Query Results
-
-```typescript
-interface MessageQueryResult {
-    messages: readonly Message[]  // Message list
-    total: number                  // Total count
-    unreadCount: number            // Unread count
-}
-
-interface UnreadMessagesResult {
-    groups: Array<{                // Messages grouped by sender
-        sender: string
-        messages: readonly Message[]
-    }>
-    total: number                  // Total unread messages
-    senderCount: number            // Number of unique senders
-}
-```
-
-### WatcherEvents
-
-```typescript
-interface WatcherEvents {
-    onMessage?: (message: Message) => void | Promise<void>        // All messages
-    onDirectMessage?: (message: Message) => void | Promise<void> // DMs only
-    onGroupMessage?: (message: Message) => void | Promise<void>  // Groups only
-    onError?: (error: Error) => void
-}
-```
-
-**Callback execution order:**
-1. `onMessage` - fires for all messages (if defined)
-2. `onDirectMessage` or `onGroupMessage` - fires based on message type
-3. Webhook notification (if configured)
-
-For full TypeScript definitions, see the [types](./src/types) directory.
 
 ## License
 
-This project is licensed under the [Server Side Public License v1 (SSPL)](./LICENSE) with additional restrictions.
+This project uses the iMessage Kit which is licensed under SSPL-1.0.
 
-### Prohibited Use
+## Acknowledgments
 
-**You may NOT use this software to create competing products or services**, including but not limited to:
-- iMessage/SMS/RCS messaging SDKs or APIs
-- Messaging automation platforms
-- Similar messaging libraries for macOS
+- Built with [@photon-ai/imessage-kit](https://github.com/photon-hq/imessage-kit)
+- Powered by [OpenAI GPT-4](https://openai.com)
+- Crisis resources from [988 Lifeline](https://988lifeline.org)
 
-### Permitted Use
+## Support
 
-You MAY use this software for:
-- Internal business operations and automation
-- Personal projects and non-commercial applications  
-- Educational and research purposes
-- Integration where messaging is not the core feature
-
-For the complete license terms, see the [LICENSE](./LICENSE) file.
+For issues or questions:
+1. Check the [iMessage Kit documentation](https://github.com/photon-hq/imessage-kit)
+2. Review the troubleshooting section above
+3. Open an issue on GitHub
 
 ---
 
-**Note**: This SDK is for educational and development purposes. Always respect user privacy and follow Apple's terms of service.
+**Remember**: This is a support tool, not professional medical advice. Always encourage users to seek professional help when needed. 💙
