@@ -1,7 +1,7 @@
 {
   "name": "mental-health-imessage-bot",
   "version": "1.0.0",
-  "description": "AI-powered mental health support chatbot for iMessage",
+  "description": "AI-powered mental health support chatbot for iMessage using Qwen 3.5 32B",
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
@@ -14,7 +14,8 @@
     "mental-health",
     "ai",
     "chatbot",
-    "therapy"
+    "therapy",
+    "qwen"
   ],
   "author": "",
   "license": "MIT",

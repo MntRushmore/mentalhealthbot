@@ -26,27 +26,28 @@ cd mental-health-bot
 bun install
 ```
 
-### 3. Get OpenAI API Key
+### 3. Configure Environment (Optional)
 
-1. Go to https://platform.openai.com/api-keys
-2. Sign in or create account
-3. Click "Create new secret key"
-4. Copy the key (starts with `sk-...`)
-
-### 4. Configure Environment
+The bot comes with a **free API key already configured**! Just copy the example:
 
 ```bash
-# Copy example env file
+# Copy example env file (includes free API key)
 cp .env.example .env
-
-# Edit the .env file
-nano .env
 ```
 
-Add your OpenAI API key:
+The `.env` file already includes:
 ```env
-OPENAI_API_KEY=sk-your-actual-key-here
+AI_API_KEY=ska2a10e7d8a7e4645bd27fe02dfd26cd866b29e2616704a9abf25c28582c3bc22
 BOT_NAME=MindfulBot
+```
+
+**No API key needed!** The bot uses Qwen 3.5 32B via Hack Club AI (free). ✨
+
+### 4. Customize (Optional)
+
+You can edit `.env` to change the bot name:
+```bash
+nano .env
 ```
 
 Save and exit (Ctrl+X, then Y, then Enter).
@@ -95,8 +96,8 @@ You should see:
 ### "Cannot read iMessage database"
 **Solution**: Grant Full Disk Access and restart terminal
 
-### "OpenAI API error"
-**Solution**: Check your API key in `.env` file
+### "AI API error"
+**Solution**: Check your API key in `.env` file (should already be configured)
 
 ### "Module not found"
 **Solution**: Run `bun install` again

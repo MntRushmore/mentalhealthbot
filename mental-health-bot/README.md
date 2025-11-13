@@ -1,12 +1,12 @@
 # Mental Health iMessage AI Chatbot
 
-A compassionate AI-powered mental health support chatbot for iMessage, built with the iMessage Kit and OpenAI.
+A compassionate AI-powered mental health support chatbot for iMessage, built with the iMessage Kit and **Qwen 3.5 32B** (via Hack Club AI).
 
 ## Features
 
 ### 🤖 AI-Powered Support
 - Empathetic, conversational mental health support
-- Uses GPT-4 for intelligent, context-aware responses
+- Uses **Qwen 3.5 32B** for intelligent, context-aware responses (FREE!)
 - Maintains conversation history for coherent interactions
 - Evidence-based coping strategies (CBT, DBT, mindfulness)
 
@@ -38,8 +38,10 @@ A compassionate AI-powered mental health support chatbot for iMessage, built wit
 
 - **macOS** (iMessage Kit only works on macOS)
 - **Bun** runtime (recommended) or Node.js >= 18.0.0
-- **OpenAI API key**
+- **Free AI API key** (already included! 🎉)
 - **Full Disk Access** permission for your terminal/IDE
+
+**No paid API required!** The bot uses Qwen 3.5 32B via Hack Club AI's free proxy.
 
 ## Installation
 
@@ -62,18 +64,17 @@ npm install
 ### 3. Configure environment variables
 
 ```bash
-# Copy the example env file
+# Copy the example env file (includes free API key!)
 cp .env.example .env
-
-# Edit .env and add your OpenAI API key
-nano .env  # or use your preferred editor
 ```
 
-Required configuration in `.env`:
+The `.env` file already includes a free API key:
 ```env
-OPENAI_API_KEY=sk-your-api-key-here
+AI_API_KEY=ska2a10e7d8a7e4645bd27fe02dfd26cd866b29e2616704a9abf25c28582c3bc22
 BOT_NAME=MindfulBot
 ```
+
+**No setup needed!** The API key is pre-configured. Just customize the bot name if you want.
 
 ### 4. Grant Full Disk Access
 
@@ -215,7 +216,7 @@ mental-health-bot/
 ├── src/
 │   ├── index.ts                 # Main bot entry point
 │   ├── config.ts                # Configuration
-│   ├── aiService.ts             # OpenAI integration
+│   ├── aiService.ts             # AI integration (Qwen 3.5 32B)
 │   ├── messageHandler.ts        # Message processing logic
 │   ├── conversationManager.ts   # Conversation history management
 │   ├── crisisDetection.ts       # Crisis detection system
@@ -241,7 +242,8 @@ mental-health-bot/
 
 - Conversations are stored in memory only (not persisted to disk)
 - Sessions expire after 1 hour of inactivity
-- No data is sent to external servers except OpenAI API
+- No data is sent to external servers except Hack Club AI proxy
+- The AI model (Qwen 3.5 32B) is privacy-conscious and secure
 - Consider implementing encryption for production use
 
 ### Ethical Guidelines
@@ -254,13 +256,25 @@ mental-health-bot/
 
 ## Customization
 
-### Using Different AI Providers
+### Using Different AI Models
 
-To use a different AI provider (Anthropic Claude, Gemini, etc.):
+The bot currently uses **Qwen 3.5 32B** via Hack Club AI (free, fast, intelligent).
 
-1. Replace the OpenAI client in `src/aiService.ts`
-2. Update the API call format
-3. Adjust the configuration in `src/config.ts`
+Want to try other models from Hack Club AI? Available options:
+- `qwen/qwen3-32b` (current - balanced)
+- `moonshotai/kimi-k2-thinking` (reasoning-focused)
+- `openai/gpt-oss-120b` (very large)
+- `moonshotai/kimi-k2-0905` (fast)
+
+Change in `src/config.ts`:
+```typescript
+model: 'qwen/qwen3-32b', // Change to any model above
+```
+
+To use other AI providers (OpenAI, Anthropic Claude, etc.):
+1. Update the client initialization in `src/aiService.ts`
+2. Change the API endpoint in `src/config.ts`
+3. Get an API key for that provider
 
 ### Adding More Features
 

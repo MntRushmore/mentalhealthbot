@@ -4,12 +4,15 @@ import { systemPrompt, conversationContext } from './prompts.js'
 import type { ConversationHistory } from './conversationManager.js'
 
 export class AIService {
-  private openai: OpenAI
+  private client: OpenAI
 
   constructor() {
-    this.openai = new OpenAI({
-      apiKey: config.openai.apiKey,
+    // Initialize OpenAI-compatible client for Hack Club AI proxy
+    this.client = new OpenAI({
+      apiKey: config.ai.apiKey,
+      baseURL: config.ai.baseURL,
     })
+    console.log('🤖 AI Service initialized with Qwen 3.5 32B')
   }
 
   /**
@@ -46,18 +49,18 @@ export class AIService {
         })
       }
 
-      // Call OpenAI API
-      const response = await this.openai.chat.completions.create({
-        model: config.openai.model,
+      // Call AI API (Qwen 3.5 32B via Hack Club)
+      const response = await this.client.chat.completions.create({
+        model: config.ai.model,
         messages: messages,
-        max_tokens: config.openai.maxTokens,
-        temperature: config.openai.temperature,
+        max_tokens: config.ai.maxTokens,
+        temperature: config.ai.temperature,
       })
 
       const aiMessage = response.choices[0]?.message?.content
 
       if (!aiMessage) {
-        throw new Error('No response from OpenAI')
+        throw new Error('No response from AI')
       }
 
       return aiMessage.trim()

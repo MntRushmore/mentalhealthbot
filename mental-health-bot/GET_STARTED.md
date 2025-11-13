@@ -9,7 +9,7 @@ mental-health-bot/
 ├── src/                          # Source code
 │   ├── index.ts                  # 🎯 Main bot entry point
 │   ├── config.ts                 # ⚙️ Configuration settings
-│   ├── aiService.ts              # 🤖 OpenAI integration
+│   ├── aiService.ts              # 🤖 Qwen AI integration (FREE!)
 │   ├── messageHandler.ts         # 💬 Message processing
 │   ├── conversationManager.ts    # 📝 Conversation history
 │   ├── crisisDetection.ts        # 🆘 Safety system
@@ -39,14 +39,14 @@ A compassionate AI chatbot that:
 
 ## ⏱️ Time Estimate
 
-- **Quick Setup**: 15 minutes
-- **Testing**: 10 minutes
+- **Quick Setup**: 10 minutes (no API key signup needed!)
+- **Testing**: 5 minutes
 - **Customization** (optional): 30-60 minutes
-- **Total**: ~25 minutes to have a working bot
+- **Total**: ~15 minutes to have a working bot
 
 ## 🎬 Quick Start (Choose Your Path)
 
-### 🏃 Path 1: I Want It Running NOW (15 minutes)
+### 🏃 Path 1: I Want It Running NOW (10 minutes)
 
 Follow this super quick guide:
 
@@ -63,13 +63,11 @@ Follow this super quick guide:
    cp .env.example .env
    ```
 
-3. **Get API Key** (5 min)
-   - Go to https://platform.openai.com/api-keys
-   - Create account & get API key
-   - Add to `.env` file:
-     ```env
-     OPENAI_API_KEY=sk-your-key-here
-     ```
+3. **API Key Already Configured!** ✨
+   - The `.env` file already includes a FREE API key
+   - No signup needed, no credit card required
+   - Uses Qwen 3.5 32B via Hack Club AI
+   - Just works! 🎉
 
 4. **Grant Permission** (3 min)
    - System Settings → Privacy & Security → Full Disk Access
@@ -215,16 +213,18 @@ The bot is designed with safety first:
 **No!** You can run it as-is. Customization requires basic TypeScript knowledge.
 
 ### "How much does it cost?"
-**OpenAI API**: ~$0.01-0.05 per conversation (very cheap!)
-**iMessage Kit**: Free (SSPL license)
-**Total**: Pennies per day for moderate use
+**Completely FREE!** 🎉
+- **AI Model**: Free (Qwen 3.5 32B via Hack Club AI)
+- **iMessage Kit**: Free (SSPL license)
+- **Total**: $0.00 - No credit card, no signup, no charges!
 
 ### "Is it secure?"
 **Yes!** 
 - Conversations stored in memory only (not saved to disk)
-- Only OpenAI sees messages (via API)
+- Messages processed by Hack Club AI proxy (Qwen 3.5 32B)
 - No third-party tracking
 - Sessions expire after 1 hour
+- Privacy-focused AI model
 
 ### "Can others use my bot?"
 **Yes!** Anyone who texts you will get responses. You can:
@@ -240,11 +240,17 @@ The bot is designed to:
 - Always state it's AI, not a therapist
 
 ### "Can I use a different AI model?"
-**Yes!** You can use:
-- GPT-3.5 (cheaper, faster)
-- Claude (Anthropic)
-- Local models (Ollama)
-- Any AI API
+**Yes!** The bot uses Qwen 3.5 32B (free), but you can switch to:
+
+**Other Hack Club AI models** (also free):
+- `moonshotai/kimi-k2-thinking` (reasoning-focused)
+- `openai/gpt-oss-120b` (very large model)
+- `moonshotai/kimi-k2-0905` (faster)
+
+**Or paid providers**:
+- OpenAI GPT-4 (paid)
+- Anthropic Claude (paid)
+- Local models via Ollama (free, private)
 
 See CUSTOMIZATION_GUIDE.md for examples.
 
@@ -287,9 +293,9 @@ Bot: [Immediate crisis resources with urgency]
 ### Before You Deploy
 
 1. **Legal Disclaimer**: This is NOT professional therapy
-2. **Privacy**: Understand data flow (OpenAI API)
+2. **Privacy**: Understand data flow (Hack Club AI proxy)
 3. **Monitoring**: Review conversations periodically
-4. **Updates**: Keep OpenAI API key secure
+4. **Free Service**: No cost, but respect usage limits
 5. **Crisis Plan**: Know when to escalate to humans
 
 ### Ethical Use
