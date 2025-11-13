@@ -23,7 +23,7 @@ export const config = {
     watcher: {
       pollInterval: 3000,
       unreadOnly: false,
-      excludeOwnMessages: true,
+      excludeOwnMessages: false,  // Changed to false for testing
       initialLookbackMs: 10000,
     },
   },
