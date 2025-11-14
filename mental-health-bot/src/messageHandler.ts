@@ -18,11 +18,21 @@ export class MessageHandler {
   async handleMessage(message: Message): Promise<string> {
     const userId = message.sender
     const userMessage = message.text || ''
+    const messageId = message.id || message.guid
 
     // Skip empty messages
     if (!userMessage.trim()) {
       return ''
     }
+
+    // Prevent duplicate processing (fixes spam issue!)
+    if (this.conversationManager.hasProcessedMessage(userId, messageId)) {
+      console.log(`⏭️  Skipping duplicate message: ${messageId}`)
+      return ''
+    }
+
+    // Mark as processed immediately
+    this.conversationManager.markMessageProcessed(userId, messageId)
 
     console.log(`📨 Message from ${userId}: ${userMessage}`)
 
@@ -109,7 +119,7 @@ export class MessageHandler {
 
       case 'reset':
         this.conversationManager.clearHistory(userId)
-        return 'Conversation reset. How can I support you today?'
+        return 'Reset. Fresh start. What\'s up?'
 
       case 'resources':
         return this.getResourcesMessage()
@@ -126,31 +136,23 @@ export class MessageHandler {
    * Get mental health resources message
    */
   private getResourcesMessage(): string {
-    return `📚 **Mental Health Resources**
+    return `🛡️ RESOURCES
 
-**Crisis Support:**
-• 988 - Suicide & Crisis Lifeline
-• Text HOME to 741741 - Crisis Text Line
-• 911 - Emergency services
+Crisis (24/7):
+→ 988 or text HOME to 741741
+→ 911 for emergencies
 
-**Mental Health Support:**
-• SAMHSA Helpline: 1-800-662-4357
-• NAMI Helpline: 1-800-950-6264
-• Psychology Today: Find a therapist
-  → psychologytoday.com/us/therapists
+Find a Therapist:
+→ psychologytoday.com/us/therapists
+→ SAMHSA: 1-800-662-4357
+→ NAMI: 1-800-950-6264
 
-**Online Resources:**
-• MentalHealth.gov
-• NIMH.nih.gov
-• Headspace (meditation app)
-• Calm (meditation app)
+Apps Worth Checking:
+→ Headspace / Calm (meditation)
+→ Sanvello (mood tracking)
+→ BetterHelp (online therapy)
 
-**Self-Care Apps:**
-• Sanvello (mood tracking)
-• Youper (AI therapy)
-• Woebot (mental health chatbot)
-
-Remember: Professional help is important. These resources can guide you to the right support. 💙`
+Real help exists. Use it.`
   }
 
   /**

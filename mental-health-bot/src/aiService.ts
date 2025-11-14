@@ -87,34 +87,34 @@ export class AIService {
    * Generate a greeting message for new conversations
    */
   getGreeting(): string {
-    return `Hi! I'm ${config.bot.name}, your mental health support companion. 🌟
+    return `Hey. I'm ${config.bot.name}.
 
-I'm here to listen and support you. You can talk to me about anything on your mind - anxiety, stress, relationships, or just how you're feeling.
+Think of me like a bouncer for your mental space - I'm here to keep things safe, real, and grounded.
 
-How are you doing today?
+What's going on?
 
-*(Note: I'm an AI assistant, not a therapist. For professional help or crisis support, please reach out to appropriate resources.)*`
+(Real talk: I'm AI, not a therapist. For serious stuff, hit up a pro. For everything else, I got you.)`
   }
 
   /**
    * Generate a help message
    */
   getHelpMessage(): string {
-    return `Here's how I can help:
+    return `Here's what I do:
 
-💬 **Talk to me** about what's on your mind
-🧘 **Learn techniques** for managing stress/anxiety
-🤝 **Get support** with difficult emotions
-📚 **Explore resources** for mental wellness
+💬 Real talk about what's on your mind
+🧘 Quick tools (breathing, grounding, reframing)
+🛡️ Keep your mental space safe
+📚 Connect you to real help when needed
 
-You can ask me:
-- "I'm feeling anxious, can you help?"
-- "Can you teach me a breathing exercise?"
-- "I'm having a hard day"
-- "How do I deal with stress?"
+Just text me. No commands needed.
 
-Remember: I'm here to support you, but I'm not a replacement for professional therapy.
+Commands if you want em:
+→ start - fresh convo
+→ reset - clear history  
+→ crisis - emergency numbers
+→ resources - mental health support
 
-What would you like to talk about?`
+I'm support, not therapy. But I'm here.`
   }
 }

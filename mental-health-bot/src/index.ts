@@ -65,17 +65,13 @@ class MentalHealthBot {
    */
   private async handleDirectMessage(message: any): Promise<void> {
     try {
-      console.log(`\n📨 New DM from ${message.sender}`)
-      console.log(`📝 Message text: "${message.text}"`)
-      console.log(`📝 Message object:`, JSON.stringify(message, null, 2))
-
       // Generate response
       const response = await this.messageHandler.handleMessage(message)
 
       // Send response if we have one
       if (response) {
         await this.sdk.send(message.sender, response)
-        console.log('✅ Response sent\n')
+        console.log(`✅ Sent to ${message.sender}`)
       }
     } catch (error) {
       console.error('❌ Error handling DM:', error)

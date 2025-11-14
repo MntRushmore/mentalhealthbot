@@ -62,46 +62,44 @@ export function detectCrisis(message: string): CrisisDetectionResult {
  */
 export function getCrisisResponse(severity: 'low' | 'medium' | 'high'): string {
   const resources = `
-🆘 **CRISIS RESOURCES**
+🆘 REAL HELP NOW:
 
-If you're in immediate danger:
-• Call 911
+Immediate:
+→ 911 if you're in danger
 
-24/7 Crisis Support:
-• Call/Text ${config.crisis.hotline} (Suicide & Crisis Lifeline)
-• Text HOME to ${config.crisis.textLine} (Crisis Text Line)
-• Call 1-800-273-8255 (National Suicide Prevention Lifeline)
+24/7 Crisis Lines:
+→ Call/Text ${config.crisis.hotline}
+→ Text HOME to ${config.crisis.textLine}
 
-International:
-• Visit findahelpline.com for your country
-
-You can also:
-• Go to your nearest emergency room
-• Call a trusted friend or family member
-• Contact your therapist if you have one`
+Also:
+→ ER (nearest hospital)
+→ Friend/family you trust
+→ Your therapist if you have one`
 
   if (severity === 'high') {
-    return `I'm really concerned about your safety right now. What you're feeling is serious, and you deserve immediate support from trained crisis professionals.
+    return `Stop. I need you to listen.
+
+This is serious. You need trained professionals RIGHT NOW, not a text bot.
 
 ${resources}
 
-Please reach out to one of these resources right away. You don't have to go through this alone. 💙`
+I'll be here after you call them. But call them FIRST. Your safety matters. Go.`
   }
 
   if (severity === 'medium') {
-    return `I'm hearing that you're in a really difficult place. I want you to know that help is available, and things can get better.
+    return `Hey. What you're telling me - this needs real help.
 
 ${resources}
 
-Please consider reaching out to one of these resources. They're staffed by trained professionals who can provide the support you need right now. 💙`
+These people are trained for this. I'm not. Please reach out. You don't have to handle this alone.`
   }
 
   // Low severity
-  return `I hear that you're struggling, and I want to make sure you have access to support if you need it.
+  return `I'm seeing some heavy stuff here. Just want you to know help's available if you need it.
 
 ${resources}
 
-These resources are available 24/7 if you need someone to talk to. You deserve support. 💙`
+No pressure. But they're there 24/7. You're worth it.`
 }
 
 /**

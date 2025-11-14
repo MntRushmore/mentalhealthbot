@@ -8,6 +8,7 @@ export interface ConversationHistory {
 
 export class ConversationManager {
   private conversations: Map<string, ConversationHistory[]> = new Map()
+  private processedMessages: Map<string, Set<string>> = new Map() // Track processed message IDs
   private readonly maxHistoryLength = 20 // Keep last 20 messages per user
   private readonly sessionTimeout = 3600000 // 1 hour in milliseconds
 
@@ -102,5 +103,32 @@ export class ConversationManager {
   isNewConversation(userId: string): boolean {
     const history = this.getHistory(userId)
     return history.length === 0
+  }
+
+  /**
+   * Check if we've already processed this message
+   */
+  hasProcessedMessage(userId: string, messageId: string): boolean {
+    if (!this.processedMessages.has(userId)) {
+      this.processedMessages.set(userId, new Set())
+    }
+    return this.processedMessages.get(userId)!.has(messageId)
+  }
+
+  /**
+   * Mark a message as processed
+   */
+  markMessageProcessed(userId: string, messageId: string): void {
+    if (!this.processedMessages.has(userId)) {
+      this.processedMessages.set(userId, new Set())
+    }
+    this.processedMessages.get(userId)!.add(messageId)
+
+    // Clean up old processed messages (keep last 100 per user)
+    const processed = this.processedMessages.get(userId)!
+    if (processed.size > 100) {
+      const toRemove = Array.from(processed).slice(0, processed.size - 100)
+      toRemove.forEach(id => processed.delete(id))
+    }
   }
 }
